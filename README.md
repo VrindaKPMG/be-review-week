@@ -10,8 +10,7 @@ Your database will be PSQL, and you will interact with it using [node-postgres](
 
 In order to successfully connect with the database, run:
 
-```npm init -y```
-```npm install dotenv```
+```npm install```
 
 Create a new file with the name .env.test and insert the following:
 PGDATABASE: nc_news_test
