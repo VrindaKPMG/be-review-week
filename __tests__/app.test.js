@@ -47,7 +47,7 @@ describe('GET /api/topics', () => {
             .expect(200)
             .then(({body : {articles}}) => {
                 expect(articles).toHaveLength(12)
-                console.log(articles)
+                expect(articles).toBeSortedBy('created_at', { descending: true })   
                 articles.forEach((article) => {
                     expect(article).toEqual(
                         expect.objectContaining({
@@ -58,11 +58,10 @@ describe('GET /api/topics', () => {
                             created_at: expect.any(String),
                             votes: expect.any(Number),
                             comment_count: expect.any(String)
-                            
                         })
                     )
             })
-                   
+              
             })
     
             })
