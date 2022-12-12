@@ -13,8 +13,8 @@ describe('testing error for any incorrect path', () => {
         return request(app)
         .get('/apo')
         .expect(404)
-        .then(({body: {message}}) => {
-            expect(message).toBe('Path not found :( Try again.')
+        .then(({body: {msg}}) => {
+            expect(msg).toBe('Path not found :( Try again.')
         })
     })
 })
@@ -25,7 +25,6 @@ describe('GET /api/topics', () => {
         .get('/api/topics')
         .expect(200)
         .then(({body : {topics}}) => {
-            expect(topics).toBeInstanceOf(Array)
             expect(topics).toHaveLength(3)
             topics.forEach((topic) => {
                 expect(topic).toEqual(
