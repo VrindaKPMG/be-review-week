@@ -33,6 +33,11 @@ app.all('*', (req, res, next) => {
     res.status(404).send({msg: 'Path not found :( Try again.'})
 });
 
+//handles anything not specifically handled
+app.all('*', (err, req, res, next) => {
+    res.status(500).send({msg : 'something is wrong'})
+});
+
 
 module.exports = app;
 
