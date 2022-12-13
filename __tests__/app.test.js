@@ -74,7 +74,7 @@ describe('GET /api/articles/:article_id', () => {
         .expect(200)
         .then((response) => {
             const article = response.body.article;
-            expect(article).toEqual({
+            expect(article).toMatchObject({
                 article_id: 3,
                 title: 'Eight pug gifs that remind me of mitch',
                 topic: 'mitch',
