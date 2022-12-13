@@ -117,6 +117,7 @@ describe('GET /api/articles/:article_id/comments', () => {
         .expect(200)
         .then(({body: {comments}}) => {
             expect(comments).toHaveLength(2)
+            expect(comments).toBeSortedBy('created_at', { descending: true })  
             comments.forEach((comment) => {
                 expect(comment).toEqual(
                     expect.objectContaining({
@@ -131,7 +132,37 @@ describe('GET /api/articles/:article_id/comments', () => {
 
         })
     })
+    test('200: gives you empty array when no comment is there', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({body: {comments}}) => {
+            expect(comments).toHaveLength(0)
+        })
+    })
+    test('400: invalid article_id given', () => {
+        return request(app)
+        .get('/api/articles/ditto/comments')
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+            })
+    })
+
+    test('404: given potentially valid article_id but does not exist', () => {
+        return request(app)
+        .get('/api/articles/666/comments')
+        //.expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+            })
+    })
 })
+
+
+
 
 
 

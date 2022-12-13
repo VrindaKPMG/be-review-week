@@ -1,5 +1,7 @@
 const articles = require("../db/data/test-data/articles");
 const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId } = require("../models/model-topics");
+const {checkArticleId} = require('../models/check-article-id')
+
 
 exports.getTopics = (req, res, next) => {
     selectTopics().then((topics) => {
@@ -19,15 +21,19 @@ exports.getArticleById = (req, res, next) => {
        res.status(200).send({article})
     })
     .catch((err) => {
-        //res.status(400).send({msg : 'wrong request'});
         next(err)
     })
-    
 }
 
 exports.getArticleCommentById = (req, res, next) => {
     const article_id = req.params.article_id;
-    selectCommentsByArticleId(article_id).then((comments) => {
+
+    Promise.all([checkArticleId(article_id),
+        selectCommentsByArticleId(article_id),])
+    .then(([article_id_exists, comments]) => {
         res.status(200).send({comments})
+    })
+    .catch((err) => {
+        next(err)
     })
 }
