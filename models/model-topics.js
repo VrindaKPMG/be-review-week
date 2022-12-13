@@ -16,5 +16,13 @@ exports.selectArticles = () => {
         return rows
     })
 
-    
+}
+
+exports.selectArticleById = (article_id) => {
+    return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id]).then((results) => {
+        if (results.rowCount === 0) {
+            return Promise.reject({msg : 'not found'});
+        }
+        return results.rows[0]
+    })
 }
