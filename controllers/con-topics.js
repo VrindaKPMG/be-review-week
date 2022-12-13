@@ -1,5 +1,5 @@
 const articles = require("../db/data/test-data/articles");
-const { selectTopics, selectArticles, selectArticleById } = require("../models/model-topics");
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId } = require("../models/model-topics");
 
 exports.getTopics = (req, res, next) => {
     selectTopics().then((topics) => {
@@ -23,4 +23,11 @@ exports.getArticleById = (req, res, next) => {
         next(err)
     })
     
+}
+
+exports.getArticleCommentById = (req, res, next) => {
+    const article_id = req.params.article_id;
+    selectCommentsByArticleId(article_id).then((comments) => {
+        res.status(200).send({comments})
+    })
 }

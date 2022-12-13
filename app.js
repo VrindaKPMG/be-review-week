@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
-const {getTopics, getArticles, getArticleById} = require('./controllers/con-topics')
+const {getTopics, getArticles, getArticleById, getArticleCommentById} = require('./controllers/con-topics')
 
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id', getArticleById)
+app.get('/api/articles/:article_id/comments', getArticleCommentById)
 
 //handles 400 errors (breaks sql rules so cannot exist)
 app.use((err, req, res, next) => {
