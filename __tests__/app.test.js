@@ -153,7 +153,7 @@ describe('GET /api/articles/:article_id/comments', () => {
     test('404: given potentially valid article_id but does not exist', () => {
         return request(app)
         .get('/api/articles/666/comments')
-        //.expect(404)
+        .expect(404)
         .then((response) => {
             const msg = response.body.msg;
             expect(msg).toBe('not found')
