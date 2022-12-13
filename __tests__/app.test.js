@@ -65,8 +65,52 @@ describe('GET /api/topics', () => {
             })
     
             })
+})
+
+describe('GET /api/articles/:article_id', () => {
+    test('200: brings up matching article to the article_id', () => {
+        return request(app)
+        .get('/api/articles/3')
+        .expect(200)
+        .then((response) => {
+            const article = response.body.article;
+            expect(article).toEqual({
+                article_id: 3,
+                title: 'Eight pug gifs that remind me of mitch',
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: 'some gifs',
+                created_at: '2020-11-03T09:12:00.000Z',
+                votes: 0
+              })
+            })
+
         })
-        
+        test('400: invalid article_id given', () => {
+            return request(app)
+            .get('/api/articles/pikachu')
+            .expect(400)
+            .then((response) => {
+                const msg = response.body.msg;
+                expect(msg).toBe('wrong request')
+                })
+    
+        })
+               
+    })
+    test('404: given article_id valid but does not exist', () => {
+        return request(app)
+        .get('/api/articles/15')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+            })
+
+    })
+           
+
+
 
 
 
