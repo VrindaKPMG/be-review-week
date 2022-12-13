@@ -7,6 +7,7 @@ app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id', getArticleById)
 
+
 //handles 400 errors (breaks sql rules so cannot exist)
 app.use((err, req, res, next) => {
     if (err.code === '22P02') {
