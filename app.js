@@ -1,38 +1,34 @@
 const express = require('express');
 const app = express();
-const {getTopics, getArticles, getArticleById, getArticleCommentById} = require('./controllers/con-topics')
+const {getTopics, getArticles, getArticleById, getArticleCommentById, postCommentByArticleId} = require('./controllers/con-topics')
 
+app.use(express.json());
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id', getArticleById)
 app.get('/api/articles/:article_id/comments', getArticleCommentById)
-
-
-//handles 400 errors (breaks sql rules so cannot exist)
-app.use((err, req, res, next) => {
-    if (err.code === '22P02') {
-        res.status(400).send({msg : 'wrong request'})
-    }
-    else {
-        next(err)
-    }
-})
-
-//handles 404 not found errors (path does not break sql rules but does not currently exist)
-app.use((err, req, res, next) => {
-    if (err.msg !== undefined) {
-        res.status(404).send({msg: err.msg});
-    }
-    else {
-        next(err);
-    }
-})
+app.post('/api/articles/:article_id/comments', postCommentByArticleId)
 
 //handles all incorrect path errors
 app.all('*', (req, res, next) => {
     res.status(404).send({msg: 'Path not found :( Try again.'})
 });
+
+
+app.use((err, req, res, next) => {
+    if (err.code === '22P02' || err.code === '23502') {
+        res.status(400).send({msg : 'wrong request'})
+    }
+    if (err.code === '23503') {
+        res.status(404).send({msg : 'not found'})
+    }
+    if (err.msg && err.status) {
+        res.status(err.status).send({msg: err.msg})
+    }
+})
+
+
 
 //handles anything not specifically handled
 app.all('*', (err, req, res, next) => {
@@ -40,5 +36,7 @@ app.all('*', (err, req, res, next) => {
 });
 
 
-module.exports = app;
 
+
+
+module.exports = app;

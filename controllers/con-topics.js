@@ -1,5 +1,5 @@
 const articles = require("../db/data/test-data/articles");
-const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId } = require("../models/model-topics");
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment } = require("../models/model-topics");
 const {checkArticleId} = require('../models/check-article-id')
 
 
@@ -32,6 +32,17 @@ exports.getArticleCommentById = (req, res, next) => {
         selectCommentsByArticleId(article_id),])
     .then(([article_id_exists, comments]) => {
         res.status(200).send({comments})
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
+exports.postCommentByArticleId = (req, res, next) => {
+    const article_id = req.params.article_id
+    const newComment = req.body
+    addComment(article_id, newComment).then((comment) => {
+        res.status(201).send({comment})
     })
     .catch((err) => {
         next(err)

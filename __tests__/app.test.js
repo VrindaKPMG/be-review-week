@@ -96,18 +96,19 @@ describe('GET /api/articles/:article_id', () => {
                 })
     
         })
+        test('404: given article_id valid but does not exist', () => {
+            return request(app)
+            .get('/api/articles/15')
+            .expect(404)
+            .then((response) => {
+                const msg = response.body.msg;
+                expect(msg).toBe('not found')
+                })
+    
+        })
                
     })
-    test('404: given article_id valid but does not exist', () => {
-        return request(app)
-        .get('/api/articles/15')
-        .expect(404)
-        .then((response) => {
-            const msg = response.body.msg;
-            expect(msg).toBe('not found')
-            })
-
-    })
+    
 
 
 
@@ -160,6 +161,113 @@ describe('GET /api/articles/:article_id/comments', () => {
             const msg = response.body.msg;
             expect(msg).toBe('not found')
             })
+    })
+})
+
+describe('POST /api/articles/:article_id/comments', () => {
+    test('201: adds your comment for the specified article ', () => {
+        const newComment = {
+            username: 'rogersop',
+            body: 'tldr'
+        };
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body}) => {
+            const myComment = body.comment
+                expect(myComment).toMatchObject({
+                    comment_id: 19,
+                    author: 'rogersop',
+                    body: 'tldr',
+                    article_id: 2,
+                    votes: 0,
+                    created_at: expect.any(String)
+                })
+        })
+
+    })
+    test('400: article_id given breaks SQL rules', () => {
+        const newComment = {
+            username: 'rogersop',
+            body: 'tldr'
+        };
+        return request(app)
+        .post('/api/articles/spoink/comments')
+        .send(newComment)
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+            })
+
+    })
+
+    test('400: missing important essential key from POST object', () => {
+        const newComment = {
+            username: 'rogersop'
+        };
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+            })
+
+    })
+
+    test('404: article_id given follows SQL rules but does not exist', () => {
+        const newComment = {
+            username: 'rogersop',
+            body: 'tldr'
+        };
+        return request(app)
+        .post('/api/articles/69/comments')
+        .send(newComment)
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+            })
+    })
+    test('404: username given does not actually exist', () => {
+        const newComment = {
+            username: 'vrinda',
+            body: 'tldr'
+        };
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+            })
+    })
+    test('201: adds your comment for the specified article even with extra keys ', () => {
+        const newComment = {
+            username: 'rogersop',
+            body: 'tldr',
+            extraKey: 'he he'
+        };
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({body}) => {
+            const myComment = body.comment
+                expect(myComment).toMatchObject({
+                    comment_id: 19,
+                    author: 'rogersop',
+                    body: 'tldr',
+                    article_id: 2,
+                    votes: 0,
+                    created_at: expect.any(String)
+                })
+        })
+
     })
 })
 
