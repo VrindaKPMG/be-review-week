@@ -52,4 +52,18 @@ exports.addComment = (article_id, newComment) => {
         
 }
 
+exports.incrementArticleVote = (article_id, articleUpdate) => {
+    const { inc_votes } = articleUpdate
+    return db.query(`
+    UPDATE articles
+    SET votes = votes+$1
+    WHERE article_id = $2
+    RETURNING *`, [inc_votes, article_id])
+    .then((results) => {
+        if (results.rowCount === 0) {
+            return Promise.reject({status: 404, msg: 'not found'});
+        }
+        return results.rows[0]
+    })
+}
 

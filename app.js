@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const {getTopics, getArticles, getArticleById, getArticleCommentById, postCommentByArticleId} = require('./controllers/con-topics')
+const {getTopics, getArticles, getArticleById, getArticleCommentById, postCommentByArticleId, patchArticleVote} = require('./controllers/con-topics')
 const {handle404, handleOtherErrors, handle500} = require('./controllers/con-errors')
 
 app.use(express.json());
@@ -10,6 +10,7 @@ app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id', getArticleById)
 app.get('/api/articles/:article_id/comments', getArticleCommentById)
 app.post('/api/articles/:article_id/comments', postCommentByArticleId)
+app.patch('/api/articles/:article_id', patchArticleVote)
 
 //handles all incorrect path errors
 app.all('*', handle404)
