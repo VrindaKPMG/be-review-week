@@ -1,5 +1,5 @@
 const articles = require("../db/data/test-data/articles");
-const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment } = require("../models/model-topics");
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment, incrementArticleVote } = require("../models/model-topics");
 const {checkArticleId} = require('../models/check-article-id')
 
 
@@ -43,6 +43,17 @@ exports.postCommentByArticleId = (req, res, next) => {
     const newComment = req.body
     addComment(article_id, newComment).then((comment) => {
         res.status(201).send({comment})
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
+exports.patchArticleVote = (req,res,next) => {
+    const article_id = req.params.article_id;
+    const articleUpdate = req.body
+    incrementArticleVote(article_id, articleUpdate).then((article) => {
+        res.status(200).send({article})
     })
     .catch((err) => {
         next(err)

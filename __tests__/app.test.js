@@ -271,7 +271,70 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
 })
 
-
+describe('PATCH /api/articles/:article_id', () => {
+    test('200: will respond with updated vote count on article', () => {
+        const articleUpdate = {"inc_votes": 7}
+        return request(app)
+        .patch('/api/articles/5')
+        .send(articleUpdate)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.article).toMatchObject({
+                article_id: 5,
+                title: 'UNCOVERED: catspiracy to bring down democracy',
+                topic: 'cats',
+                author: 'rogersop',
+                body: 'Bastet walks amongst us, and the cats are taking arms!',
+                created_at: '2020-08-03T13:14:00.000Z',
+                votes: 7
+            })
+        })
+    })
+    test('400: given an article_id which breaks sql rules', () => {
+        const articleUpdate = {"inc_votes": 7}
+        return request(app)
+        .patch('/api/articles/bulbasaur')
+        .send(articleUpdate)
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+        })
+    })
+    test('400: given no inc_votes', () => {
+        const articleUpdate = {}
+        return request(app)
+        .patch('/api/articles/5')
+        .send(articleUpdate)
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+        })
+    })
+    test('400: given inc_votes but it cannot be added as not integer', () => {
+        const articleUpdate = {"inc_votes": "Machop"}
+        return request(app)
+        .patch('/api/articles/5')
+        .send(articleUpdate)
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+        })
+    })
+    test('404: given an article_id that follows sql rules but does not exist yet', () => {
+        const articleUpdate = {"inc_votes": 7}
+        return request(app)
+        .patch('/api/articles/420')
+        .send(articleUpdate)
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+        })
+    })
+})
 
 
 
