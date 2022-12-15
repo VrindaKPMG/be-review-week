@@ -67,3 +67,8 @@ exports.incrementArticleVote = (article_id, articleUpdate) => {
     })
 }
 
+exports.selectUsers = () => {
+    return db.query(`SELECT * FROM users`).then((results) => {
+        return results.rows
+    })
+}

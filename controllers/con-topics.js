@@ -1,5 +1,5 @@
 const articles = require("../db/data/test-data/articles");
-const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment, incrementArticleVote } = require("../models/model-topics");
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment, incrementArticleVote, selectUsers } = require("../models/model-topics");
 const {checkArticleId} = require('../models/check-article-id')
 
 
@@ -57,5 +57,11 @@ exports.patchArticleVote = (req,res,next) => {
     })
     .catch((err) => {
         next(err)
+    })
+}
+
+exports.getUsers = (req, res, next) => {
+    selectUsers().then((users) => {
+        res.status(200).send({users})
     })
 }
