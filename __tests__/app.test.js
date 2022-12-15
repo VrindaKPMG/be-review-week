@@ -108,11 +108,7 @@ describe('GET /api/articles/:article_id', () => {
     
         })
                
-    })
-    
-
-
-
+})
 
 describe('GET /api/articles/:article_id/comments', () => {
     test('200: gives you comment info based on article_id in path', () => {
@@ -355,6 +351,101 @@ describe('GET /api/users', () => {
             })    
         })
     })
+})
+
+describe('GET /api/articles to query', () => {
+    test('200: can add a topics query', () => {
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body : {articles}})=> {
+            articles.forEach((article) => {
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        comment_count: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+        })
+            
+       })
+    })
+    test('200: can add a sort_by query and order', () => {
+        return request(app)
+        .get('/api/articles?sort_by=title&order_by=ASC')
+        .expect(200)
+        .then(({body: {articles}})=> {
+            expect(articles).toBeSortedBy('title', {descending: false})
+            articles.forEach((article) => {
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        comment_count: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+        })
+            
+       })
+    })
+    test('404: trying to query with a topic that is not yet a topic', () => {
+        return request(app)
+        .get('/api/articles?topic=spheal')
+        .expect(404)
+        .then((response)=> {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+       })
+    })
+    test('400: trying to sort by with a column that is not in articles table should not work', () => {
+        return request(app)
+        .get('/api/articles?sort_by=hitmonlee')
+        .expect(400)
+        .then((response)=> {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+       })
+    })
+    test('400: trying to order by with a column that is not desc/asc/DESC/ASC should not work', () => {
+        return request(app)
+        .get('/api/articles?order_by=amaura')
+        .expect(400)
+        .then((response)=> {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+       })
+    })
+    test('200: topic does not come up with anything but is a valid topic ', () => {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then(({body : {articles}})=> {
+            articles.forEach((article) => {
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        comment_count: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+        })
+            
+       })
+    })
+
 })
 
 
