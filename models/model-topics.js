@@ -21,9 +21,12 @@ exports.selectArticles = () => {
 exports.selectArticleById = (article_id) => {
     return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id]).then((results) => {
         if (results.rowCount === 0) {
-            return Promise.reject({msg : 'not found'});
+            return Promise.reject({status: 404, msg : 'not found'});
         }
-        return results.rows[0]
+        else {
+            return results.rows[0]
+        }
+        
     })
 }
 
@@ -32,3 +35,21 @@ exports.selectCommentsByArticleId= (article_id) => {
         return results.rows
     })
 }
+
+exports.addComment = (article_id, newComment) => {
+    const {username, body} = newComment
+    return db.query(`
+    INSERT INTO comments (author, body, article_id)
+    VALUES( $1, $2, $3)
+    RETURNING *`, [username, body, article_id])
+    .then((results) => { 
+        if (results.rowCount === 0) {
+            return Promise.reject({status: 404, msg : 'not found'});
+        }
+        else {
+            return results.rows[0]}
+        })
+        
+}
+
+
