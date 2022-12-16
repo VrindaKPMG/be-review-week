@@ -7,14 +7,31 @@ exports.selectTopics = () => {
     
 }
 
-exports.selectArticles = () => {
-    return db.query(`SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(*) AS comment_count
+exports.selectArticles = (topic, sort_by = 'created_at', order_by = 'DESC') => {
+    const validOrderQuery = ['desc', 'asc', 'DESC', 'ASC']
+    const validSortQuery = ['article_id', 'author', 'comment_count', 'created_at', 'title', 'topic', 'votes']
+
+    if (!validOrderQuery.includes(order_by) || !validSortQuery.includes(sort_by)) {
+        return Promise.reject({status: 400, msg : 'wrong request'})
+    }
+
+    let doINeedTopic = []
+
+    let articleQuery = `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(*) AS comment_count
     FROM articles
-    LEFT JOIN comments ON comments.article_id = articles.article_id
-    GROUP BY articles.author, title, articles.article_id
-    ORDER BY created_at DESC`).then(({rows})=>{
+    LEFT JOIN comments ON comments.article_id = articles.article_id `
+
+    if (topic !== undefined) {
+        articleQuery += `WHERE topic = $1 `
+        doINeedTopic.push(topic)
+    }
+    
+    articleQuery += `GROUP BY articles.author, title, articles.article_id 
+    ORDER BY articles.${sort_by} ${order_by};`
+    return db.query(articleQuery, doINeedTopic).then(({rows})=>{
         return rows
     })
+    
 
 }
 
@@ -31,7 +48,11 @@ exports.selectArticleById = (article_id) => {
 }
 
 exports.selectCommentsByArticleId= (article_id) => {
-    return db.query(`SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`, [article_id]).then((results) => {
+    return db.query(`
+    SELECT comment_id, votes, created_at, author, body 
+    FROM comments 
+    WHERE article_id = $1 
+    ORDER BY created_at DESC;`, [article_id]).then((results) => {
         return results.rows
     })
 }
@@ -72,3 +93,4 @@ exports.selectUsers = () => {
         return results.rows
     })
 }
+
