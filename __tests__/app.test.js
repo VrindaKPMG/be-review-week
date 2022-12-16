@@ -472,5 +472,26 @@ describe('GET /api/articles to query', () => {
 
 })
 
+describe('GET /api/articles/:article_id comment_count as a query', () => {
+    test('200: get the comment count is asking for it', () => {
+        return request(app)
+        .get('/api/articles/3?add_on=comment_count')
+        .expect(200)
+        .then(({body: {article}}) => {
+            expect(article).toEqual(
+                expect.objectContaining({
+                    article_id: expect.any(Number),
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    comment_count: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    body: expect.any(String)
+                })
+            )
+        })
+    })
+})
 
 
