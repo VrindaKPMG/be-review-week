@@ -472,5 +472,24 @@ describe('GET /api/articles to query', () => {
 
 })
 
+describe('GET /api/articles/:article_id comment_count as a query', () => {
+    test('200: get the comment count is asking for it', () => {
+        return request(app)
+        .get('/api/articles/3')
+        .expect(200)
+        .then(({body: {article}}) => {
+            expect(article).toMatchObject({
+                article_id: 3,
+                title: 'Eight pug gifs that remind me of mitch',
+                topic: 'mitch',
+                author: 'icellusedkars',
+                body: 'some gifs',
+                created_at: '2020-11-03T09:12:00.000Z',
+                votes: 0, 
+                comment_count: '2'
+              })
+        })
+    })
+})
 
 
