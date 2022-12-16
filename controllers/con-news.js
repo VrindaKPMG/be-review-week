@@ -1,5 +1,5 @@
 const articles = require("../db/data/test-data/articles");
-const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment, incrementArticleVote, selectUsers } = require("../models/model-news");
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment, incrementArticleVote, selectUsers, removeCommentById } = require("../models/model-news");
 const {checkArticleId} = require('../models/check-article-id');
 const {checkTopic} = require('../models/check-topic')
 
@@ -75,3 +75,12 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
+exports.deleteCommentByID = (req, res, next) => {
+    const comment_id = req.params.comment_id
+    removeCommentById(comment_id).then((comment) => {
+        res.status(204).send()
+    })
+    .catch((err) => {
+        next(err)
+    })
+}

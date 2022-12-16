@@ -3,6 +3,7 @@ const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data/index');
 const request = require('supertest');
+const { response } = require('../app');
 
 
 
@@ -39,7 +40,7 @@ describe('GET /api/topics', () => {
         })
 
         })
-    })
+})
 
     describe('GET /api/articles', () => {
         test('200: brings all data on topics endpoint', () => {
@@ -492,4 +493,34 @@ describe('GET /api/articles/:article_id comment_count as a query', () => {
     })
 })
 
+describe('DELETE /api/comments/:comment_id', () => {
+    test('204: should get no content', () => {
+        return request(app)
+        .delete('/api/comments/7')
+        .expect(204)
+        
+       
+     })
+
+     test('400: invalid comment_id that breaks sql rules', () => {
+        return request(app)
+        .delete('/api/comments/cascoon')
+        .expect(400)
+        .then((response)=> {
+            const msg = response.body.msg;
+            expect(msg).toBe('wrong request')
+       })
+
+     })
+     test('404: invalid comment_id because it does not exist yet', () => {
+        return request(app)
+        .delete('/api/comments/80085')
+        .expect(404)
+        .then((response)=> {
+            const msg = response.body.msg;
+            expect(msg).toBe('not found')
+       })
+
+     })
+})
 
