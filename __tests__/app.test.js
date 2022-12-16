@@ -42,7 +42,7 @@ describe('GET /api/topics', () => {
         })
 })
 
-    describe('GET /api/articles', () => {
+describe('GET /api/articles', () => {
         test('200: brings all data on topics endpoint', () => {
             return request(app)
             .get('/api/articles')

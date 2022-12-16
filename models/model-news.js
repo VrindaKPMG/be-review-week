@@ -61,7 +61,7 @@ exports.selectCommentsByArticleId= (article_id) => {
     FROM comments 
     WHERE article_id = $1 
     ORDER BY created_at DESC;`, [article_id]).then((results) => {
-        return results.rows
+    return results.rows
     })
 }
 
