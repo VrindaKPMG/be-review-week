@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const {getTopics, getArticles, getArticleById, getArticleCommentById, postCommentByArticleId, patchArticleVote, getUsers, getTopic} = require('./controllers/con-topics')
+const {getTopics, getArticles, getArticleById, getArticleCommentById, postCommentByArticleId, patchArticleVote, getUsers, getTopic} = require('./controllers/con-news')
 const {handle404, handleOtherErrors, handle500} = require('./controllers/con-errors')
 
 app.use(express.json());

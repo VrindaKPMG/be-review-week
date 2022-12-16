@@ -1,5 +1,5 @@
 const articles = require("../db/data/test-data/articles");
-const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment, incrementArticleVote, selectUsers } = require("../models/model-topics");
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, addComment, incrementArticleVote, selectUsers } = require("../models/model-news");
 const {checkArticleId} = require('../models/check-article-id');
 const {checkTopic} = require('../models/check-topic')
 

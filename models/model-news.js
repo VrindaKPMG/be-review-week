@@ -29,7 +29,7 @@ exports.selectArticles = (topic, sort_by = 'created_at', order_by = 'DESC') => {
     articleQuery += `GROUP BY articles.author, title, articles.article_id 
     ORDER BY articles.${sort_by} ${order_by};`
     return db.query(articleQuery, doINeedTopic).then(({rows})=>{
-       return rows
+        return rows
     })
     
 

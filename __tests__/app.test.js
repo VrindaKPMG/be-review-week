@@ -3,7 +3,7 @@ const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data/index');
 const request = require('supertest');
-const { response } = require('../app');
+
 
 
 afterAll(() => db.end());
@@ -397,6 +397,29 @@ describe('GET /api/articles to query', () => {
             
        })
     })
+    test('200: order_by defaults to desc when not specified', () => {
+        return request(app)
+        .get('/api/articles?sort_by=article_id')
+        .expect(200)
+        .then(({body: {articles}})=> {
+            expect(articles).toHaveLength(12)
+            expect(articles).toBeSortedBy('article_id', {descending: true})
+            articles.forEach((article) => {
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        comment_count: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+        })
+            
+       })
+    })
     test('404: trying to query with a topic that is not yet a topic', () => {
         return request(app)
         .get('/api/articles?topic=spheal')
@@ -429,6 +452,7 @@ describe('GET /api/articles to query', () => {
         .get('/api/articles?topic=paper')
         .expect(200)
         .then(({body : {articles}})=> {
+            expect(articles).toHaveLength(0)
             articles.forEach((article) => {
                 expect(article).toEqual(
                     expect.objectContaining({
