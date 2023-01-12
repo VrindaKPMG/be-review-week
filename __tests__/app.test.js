@@ -376,11 +376,12 @@ describe('GET /api/articles to query', () => {
             
        })
     })
-    test('200: can add a sort_by query and order', () => {
+    test.only('200: can add a sort_by query and order', () => {
         return request(app)
         .get('/api/articles?sort_by=title&order_by=ASC')
         .expect(200)
         .then(({body: {articles}})=> {
+            console.log(articles, "in test")
             expect(articles).toBeSortedBy('title', {descending: false})
             articles.forEach((article) => {
                 expect(article).toEqual(

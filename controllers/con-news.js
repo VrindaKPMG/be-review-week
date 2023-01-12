@@ -17,6 +17,7 @@ exports.getArticles = (req, res, next) => {
     Promise.all([checkTopic(topic),
         selectArticles(topic, sort_by, order_by),])
     .then(([topic_exists, articles]) => {
+        console.log(sort_by, "in getArticles")
         res.status(200).send({articles})
     })
     .catch((err) => {

@@ -1,4 +1,5 @@
 const { ClientBase } = require('pg');
+const { rows } = require('pg/lib/defaults');
 const db = require('../db/connection')
 
 exports.selectTopics = () => {
@@ -18,7 +19,7 @@ exports.selectArticles = (topic, sort_by = 'created_at', order_by = 'DESC') => {
 
     let doINeedTopic = []
 
-    let articleQuery = `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(*) AS comment_count
+    let articleQuery = `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comments.comment_id) AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id `
 
@@ -27,9 +28,11 @@ exports.selectArticles = (topic, sort_by = 'created_at', order_by = 'DESC') => {
         doINeedTopic.push(topic)
     }
     
+
     articleQuery += `GROUP BY articles.author, title, articles.article_id 
-    ORDER BY articles.${sort_by} ${order_by};`
+    ORDER BY ${sort_by} ${order_by};`
     return db.query(articleQuery, doINeedTopic).then(({rows})=>{
+        console.log(rows, "model")
         return rows
     })
     
