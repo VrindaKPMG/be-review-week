@@ -376,7 +376,7 @@ describe('GET /api/articles to query', () => {
             
        })
     })
-    test.only('200: can add a sort_by query and order', () => {
+    test('200: can add a sort_by query and order', () => {
         return request(app)
         .get('/api/articles?sort_by=title&order_by=ASC')
         .expect(200)
